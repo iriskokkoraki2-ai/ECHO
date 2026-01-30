@@ -1,11 +1,19 @@
 """
 ECHO - A simple web server that echoes back request information
+
+Security Notice:
+- This application is designed to echo back request information for debugging/testing purposes
+- Be aware that all headers (including sensitive ones) and IP addresses are echoed back
+- Do not use in production with sensitive data
 """
 from flask import Flask, request, jsonify, render_template_string
-import json
-from datetime import datetime
+from datetime import datetime, timezone
+import os
 
 app = Flask(__name__)
+
+# Security: Limit request size to prevent DoS attacks (16MB max)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # HTML template for the home page
 HOME_TEMPLATE = """
@@ -103,7 +111,7 @@ def home():
 def echo():
     """Echo endpoint that returns request information"""
     response_data = {
-        'timestamp': datetime.utcnow().isoformat() + 'Z',
+        'timestamp': datetime.now(timezone.utc).isoformat(),
         'method': request.method,
         'url': request.url,
         'path': request.path,
@@ -128,9 +136,11 @@ def health():
     return jsonify({
         'status': 'healthy',
         'service': 'ECHO',
-        'timestamp': datetime.utcnow().isoformat() + 'Z'
+        'timestamp': datetime.now(timezone.utc).isoformat()
     })
 
 if __name__ == '__main__':
     # Run the Flask app
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    # Debug mode controlled by environment variable (default: False for security)
+    debug_mode = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
+    app.run(host='0.0.0.0', port=8080, debug=debug_mode)

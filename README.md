@@ -38,6 +38,22 @@ python main.py
 
 The server will start on `http://0.0.0.0:8080`
 
+#### Environment Variables
+
+- `DEBUG`: Set to `true`, `1`, or `yes` to enable debug mode (default: `false`)
+  ```bash
+  DEBUG=true python main.py
+  ```
+
+### Security Considerations
+
+⚠️ **Important**: This application is designed for debugging and testing purposes. It echoes back ALL request information including:
+- Headers (which may contain authentication tokens, cookies, API keys)
+- IP addresses
+- Request bodies
+
+Do not use this application with sensitive data in production environments.
+
 ### API Endpoints
 
 #### GET /
