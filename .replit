@@ -1,0 +1,22 @@
+# The command that runs the program
+run = "python main.py"
+
+# The primary language of the repl
+language = "python3"
+
+# Packager configuration for the Nix package manager
+[nix]
+channel = "stable-22_11"
+
+# Code autocomplete and intellisense
+[languageServer]
+start = "pylsp"
+
+# Environment setup
+[env]
+PYTHONPATH = "${REPL_HOME}"
+
+# Deployment configuration
+[deployment]
+run = ["python", "main.py"]
+deploymentTarget = "cloudrun"
